@@ -3,7 +3,7 @@
    1) Paste your Apps Script Web App URL below (ends in /exec).
    ========================================================================== */
 const CONFIG = {
-  API_URL: https://script.google.com/macros/s/AKfycbxxMc6lEPuDPV48rQwyO2brhQuA2rmgQprsMULqOF9n_Ap_l4kl0DbuBOYKDBQ9jeI/exec
+  API_URL: 'https://script.google.com/macros/s/AKfycbxxMc6lEPuDPV48rQwyO2brhQuA2rmgQprsMULqOF9n_Ap_l4kl0DbuBOYKDBQ9jeI/exec'
 ,
   DEFAULT_REST_SECONDS: 90,
   REST_STEP: 30,
