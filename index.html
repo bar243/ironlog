@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#16171B" />
+  <title>Ironlog</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1 class="brand">IRON<span>LOG</span></h1>
+    <span id="syncState" class="sync" title="Connection state">●</span>
+  </header>
+
+  <!-- ============================= LOG SCREEN ============================= -->
+  <main id="screen-log" class="screen">
+
+    <!-- Exercise picker -->
+    <section class="card">
+      <label class="eyebrow" for="exerciseSelect">Exercise</label>
+      <div class="row">
+        <select id="exerciseSelect"></select>
+        <button id="btnShowAdd" class="btn ghost" type="button">+ New</button>
+      </div>
+
+      <div id="addExercisePanel" class="add-panel" hidden>
+        <input id="newExerciseName" type="text" placeholder="Exercise name" autocomplete="off" />
+        <div class="row">
+          <div class="seg" role="group" aria-label="Exercise type">
+            <button type="button" class="seg-btn active" data-type="standard">Reps × Kg</button>
+            <button type="button" class="seg-btn" data-type="timed">Time (sec)</button>
+          </div>
+          <button id="btnAddExercise" class="btn red" type="button">Add</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contextual history / PB panel -->
+    <section id="historyPanel" class="card history" hidden>
+      <div class="hist-col">
+        <span class="eyebrow">Last session</span>
+        <span id="histLastDate" class="hist-date">—</span>
+        <span id="histLastDetail" class="mono big">—</span>
+      </div>
+      <div class="hist-divider"></div>
+      <div class="hist-col pb">
+        <span class="eyebrow">All-time best</span>
+        <span class="hist-date">personal record</span>
+        <span id="histPB" class="mono big">—</span>
+      </div>
+    </section>
+
+    <!-- Set entry -->
+    <section class="card">
+      <div class="row space">
+        <span class="eyebrow" id="setsLabel">Sets</span>
+        <button id="btnAddSet" class="btn ghost" type="button">+ Add set</button>
+      </div>
+      <div id="setRows"></div>
+      <button id="btnLog" class="btn red wide" type="button">Log workout</button>
+      <p id="logMsg" class="msg" hidden></p>
+    </section>
+
+    <!-- Rest timer — the plate -->
+    <section class="card timer-card">
+      <span class="eyebrow">Rest timer</span>
+      <div class="plate-wrap">
+        <button id="btnMinus" class="btn round" type="button" aria-label="Minus 30 seconds">−30</button>
+        <div class="plate" id="plate">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <circle class="plate-body" cx="100" cy="100" r="92" />
+            <circle class="plate-rim-track" cx="100" cy="100" r="84" />
+            <circle id="plateRim" class="plate-rim" cx="100" cy="100" r="84"
+                    stroke-dasharray="527.8" stroke-dashoffset="0" transform="rotate(-90 100 100)" />
+            <circle class="plate-hub" cx="100" cy="100" r="52" />
+          </svg>
+          <div class="plate-time mono" id="timerDisplay">1:30</div>
+        </div>
+        <button id="btnPlus" class="btn round" type="button" aria-label="Plus 30 seconds">+30</button>
+      </div>
+      <div class="row center">
+        <button id="btnStartPause" class="btn blue" type="button">Start</button>
+        <button id="btnReset" class="btn ghost" type="button">Reset</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================== SUMMARY SCREEN =========================== -->
+  <main id="screen-summary" class="screen" hidden>
+    <section class="card">
+      <span class="eyebrow">Work completed · today</span>
+      <div class="row space">
+        <span class="mono huge" id="totalToday">0</span>
+        <span class="unit">kg·reps total</span>
+      </div>
+    </section>
+    <div id="summaryList"></div>
+    <p id="summaryEmpty" class="msg">Nothing logged today yet. Hit the Log tab and move some iron.</p>
+  </main>
+
+  <!-- Tab bar -->
+  <nav class="tabbar">
+    <button class="tab active" data-screen="log" type="button">Log</button>
+    <button class="tab" data-screen="summary" type="button">Summary</button>
+  </nav>
+
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  </script>
+</body>
+</html>
