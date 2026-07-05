@@ -63,6 +63,7 @@ body {
 
 /* ------------ layout ------------ */
 .screen { padding: 8px 14px 20px; display: flex; flex-direction: column; gap: 12px; }
+.screen[hidden] { display: none; }
 .card {
   background: var(--panel); border: 1px solid var(--line);
   border-radius: var(--radius); padding: 14px;
