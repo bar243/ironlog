@@ -302,44 +302,44 @@ function beep() {
 
 /* ------------------------------ summary ------------------------------ */
 function renderSummary() {
-const today = todayStr();
-  // All-time dashboard: every exercise that has at least one logged set, newest activity first.
+  const today = todayStr();
+  // All-time dashboard: every exercise with at least one logged set, newest activity first.
   const loggedIds = [...new Set(state.logs.map((l) => l.exerciseId))];
-  const exIdsToday = loggedIds.sort((a, b) => {
+  const exIds = loggedIds.sort((a, b) => {
     const la = lastSessionInfo(a) ? lastSessionInfo(a).date : '';
     const lb = lastSessionInfo(b) ? lastSessionInfo(b).date : '';
     return lb.localeCompare(la);
   });
   const list = $('summaryList');
   list.innerHTML = '';
-  $('summaryEmpty').hidden = exIdsToday.length > 0;
+  $('summaryEmpty').hidden = exIds.length > 0;
 
-  let totalToday = 0;
+  let grandTotal = 0;
 
-  exIdsToday.forEach((exId) => {
+  exIds.forEach((exId) => {
     const ex = exercise(exId) || { name: 'Unknown', type: 'standard' };
     const timed = ex.type === 'timed';
     const unit = timed ? 's' : '';
 
-    const current = timed ? timeOn(exId, today) : volumeOn(exIdconst lastDate = lastSessionInfo(exId) ? lastSessionInfo(exId).date : today;
+    const lastDate = lastSessionInfo(exId) ? lastSessionInfo(exId).date : today;
     const current = timed ? timeOn(exId, lastDate) : volumeOn(exId, lastDate);
-    if (!timed) totalToday += current;
+    if (!timed) grandTotal += logsFor(exId).reduce((s, l) => s + l.volume, 0);
 
     const prev = lastSessionInfo(exId, lastDate);
     const lastVal = prev ? (timed ? timeOn(exId, prev.date) : volumeOn(exId, prev.date)) : null;
     const allTime = logsFor(exId).reduce((s, l) => s + (timed ? l.timeSec : l.volume), 0);
 
     const deltaCls = lastVal === null ? '' : current >= lastVal ? 'delta-up' : 'delta-down';
-    const note = lastVal === null ? 'First time logging this one — baseline set.'
-      : `${current >= lastVal ? '▲' : '▼'} ${fmt(Math.abs(current - lastVal))}${unit || ' kg·reps'} vs last workout (${prev.date})`;
+    const note = lastVal === null ? 'First logged session — baseline set.'
+      : `${current >= lastVal ? '▲' : '▼'} ${fmt(Math.abs(current - lastVal))}${unit || ' kg·reps'} vs previous session (${prev.date})`;
 
     list.insertAdjacentHTML('beforeend', `
       <section class="card sum-card">
         <h2 class="sum-name">${ex.name}</h2>
         <div class="sum-grid">
-          <div class="sum-cell"><span class="eyebrow">This workout</span>
+          <div class="sum-cell"><span class="eyebrow">Latest session</span>
             <span class="sum-val ${deltaCls}">${fmt(current)}${unit}</span></div>
-          <div class="sum-cell"><span class="eyebrow">Last workout</span>
+          <div class="sum-cell"><span class="eyebrow">Previous</span>
             <span class="sum-val">${lastVal === null ? '—' : fmt(lastVal) + unit}</span></div>
           <div class="sum-cell"><span class="eyebrow">All-time</span>
             <span class="sum-val">${fmt(allTime)}${unit}</span></div>
@@ -348,7 +348,7 @@ const today = todayStr();
       </section>`);
   });
 
-  $('totalToday').textContent = fmt(totalToday);
+  $('totalToday').textContent = fmt(grandTotal);
 }
 
 /* ------------------------------ wiring ------------------------------ */
