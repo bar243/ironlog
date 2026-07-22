@@ -1,5 +1,5 @@
 /* Ironlog service worker — cache the app shell; network for API calls. */
-const CACHE = 'ironlog-v3';
+const CACHE = 'ironlog-v4';
 const SHELL = [
   './', './index.html', './css/styles.css', './js/app.js',
   './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'
