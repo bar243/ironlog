@@ -302,8 +302,14 @@ function beep() {
 
 /* ------------------------------ summary ------------------------------ */
 function renderSummary() {
-  const today = todayStr();
-  const exIdsToday = [...new Set(state.logs.filter((l) => l.date === today).map((l) => l.exerciseId))];
+const today = todayStr();
+  // All-time dashboard: every exercise that has at least one logged set, newest activity first.
+  const loggedIds = [...new Set(state.logs.map((l) => l.exerciseId))];
+  const exIdsToday = loggedIds.sort((a, b) => {
+    const la = lastSessionInfo(a) ? lastSessionInfo(a).date : '';
+    const lb = lastSessionInfo(b) ? lastSessionInfo(b).date : '';
+    return lb.localeCompare(la);
+  });
   const list = $('summaryList');
   list.innerHTML = '';
   $('summaryEmpty').hidden = exIdsToday.length > 0;
@@ -315,10 +321,11 @@ function renderSummary() {
     const timed = ex.type === 'timed';
     const unit = timed ? 's' : '';
 
-    const current = timed ? timeOn(exId, today) : volumeOn(exId, today);
+    const current = timed ? timeOn(exId, today) : volumeOn(exIdconst lastDate = lastSessionInfo(exId) ? lastSessionInfo(exId).date : today;
+    const current = timed ? timeOn(exId, lastDate) : volumeOn(exId, lastDate);
     if (!timed) totalToday += current;
 
-    const prev = lastSessionInfo(exId, today);
+    const prev = lastSessionInfo(exId, lastDate);
     const lastVal = prev ? (timed ? timeOn(exId, prev.date) : volumeOn(exId, prev.date)) : null;
     const allTime = logsFor(exId).reduce((s, l) => s + (timed ? l.timeSec : l.volume), 0);
 
@@ -381,6 +388,12 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btnReset').addEventListener('click', resetTimer);
   $('btnPlus').addEventListener('click', () => nudgeTimer(CONFIG.REST_STEP));
   $('btnMinus').addEventListener('click', () => nudgeTimer(-CONFIG.REST_STEP));
+   // Auto-start rest timer when a set's weight (or hold time) is filled in.
+  $('setRows').addEventListener('blur', (e) => {
+    if (e.target.classList.contains('in-weight') || e.target.classList.contains('in-time')) {
+      if (e.target.value !== '') { resetTimer(); startPauseTimer(); }
+    }
+  }, true);
   drawTimer();
 
   window.addEventListener('online', bootstrap);
